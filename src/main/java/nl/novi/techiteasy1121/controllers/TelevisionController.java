@@ -1,11 +1,19 @@
 package nl.novi.techiteasy1121.controllers;
 
 
+import nl.novi.techiteasy1121.models.Television;
+import nl.novi.techiteasy1121.repositories.TelevisionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 public class TelevisionController {
+
+    @Autowired
+    private TelevisionRepository televisionRepository;
 
     @GetMapping("/televisions")
     public ResponseEntity<Object> getAllTelevisions() {
@@ -16,19 +24,19 @@ public class TelevisionController {
     }
 
     @GetMapping("/televisions/{id}")
-    public ResponseEntity<Object> getTelevision(@PathVariable("id") int id) {
-
+    public ResponseEntity<Television> getTelevision(@PathVariable("id") Long id) {
+    Optional<Television> savedTelevision = televisionRepository.findById(id);
         // return een String met een 200 status
-        return ResponseEntity.ok("television with id: " + id);
+        return ResponseEntity.ok(savedTelevision.get());
 
     }
 
     @PostMapping("/televisions")
-    public ResponseEntity<Object> addTelevision(@RequestBody String television) {
-
+    public ResponseEntity<Television> addTelevision(@RequestBody Television television) {
+    Television savedTelevision  = televisionRepository.save(television);
         // Return een String met een 201 status
         //De null van created zal over een paar weken vervangen worden door een gegenereerde url.
-        return ResponseEntity.created(null).body("television");
+        return ResponseEntity.created(null).body(savedTelevision);
 
     }
 
